@@ -50,7 +50,7 @@ def atan_zero_to_twopi(y, x):
 
 def precasting(minx, miny, xw, yw, xyreso, yawreso):
 
-    precast = [[] for i in range(round((math.pi * 2.0) / yawreso) + 1)]
+    precast = [[] for i in range(int(round((math.pi * 2.0) / yawreso)) + 1)]
 
     for ix in range(xw):
         for iy in range(yw):
@@ -59,7 +59,7 @@ def precasting(minx, miny, xw, yw, xyreso, yawreso):
 
             d = math.sqrt(px**2 + py**2)
             angle = atan_zero_to_twopi(py, px)
-            angleid = math.floor(angle / yawreso)
+            angleid = int(math.floor(angle / yawreso))
 
             pc = precastDB()
 
@@ -87,7 +87,7 @@ def generate_ray_casting_grid_map(ox, oy, xyreso, yawreso):
 
         d = math.sqrt(x**2 + y**2)
         angle = atan_zero_to_twopi(y, x)
-        angleid = math.floor(angle / yawreso)
+        angleid = int(math.floor(angle / yawreso))
 
         gridlist = precast[angleid]
 
@@ -114,14 +114,15 @@ def main():
     print(__file__ + " start!!")
 
     xyreso = 0.25  # x-y grid resolution [m]
-    yawreso = math.radians(10.0)  # yaw angle resolution [rad]
+    yawreso = np.deg2rad(10.0)  # yaw angle resolution [rad]
 
     for i in range(5):
         ox = (np.random.rand(4) - 0.5) * 10.0
         oy = (np.random.rand(4) - 0.5) * 10.0
         pmap, minx, maxx, miny, maxy, xyreso = generate_ray_casting_grid_map(
             ox, oy, xyreso, yawreso)
-        if show_animation:
+
+        if show_animation:  # pragma: no cover
             plt.cla()
             draw_heatmap(pmap, minx, maxx, miny, maxy, xyreso)
             plt.plot(ox, oy, "xr")
